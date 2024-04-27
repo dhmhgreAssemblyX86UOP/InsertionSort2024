@@ -1,3 +1,3 @@
-#Insertion Sort 2024
+# Insertion Sort 2024
 
 An implementation of the insertion algorithm 

@@ -124,7 +124,101 @@ mov esp, ebp
 pop ebp
 ret
 printArray Endp
+
+insertionSort PROC
+push ebp
+mov ebp, esp
+pushad
+
+;    for (i = 1; i < n; i++) {
+;	 initialization
+     mov ebx,1 ; ebx <- i = 1
+	 jmp COND1
+;    body
+	 BODY1:
+;        key = arr[i];
+		mov eax, [ebp + 8]		 ; eax <- arr
+		mov edx, [eax + ebx * 4] ; edx <- key =arr[i] 
+;        j = i - 1;
+		mov edi, ebx
+		dec edi ; edi <- j = i - 1
+
+
+;		 // Move elements of arr[0..i-1],
+;        // that are greater than key, 
+;        // to one position ahead of their
+;        // current position
+;        while (j >= 0 && arr[j] > key) {
+;            arr[j + 1] = arr[j];
+;            j = j - 1;
+;        }
+		 ; save ebx
+		 push ebx
+
+
+		 ;initialization
+		 ; edi has j=i-1
+		 ; body
+		 jmp COND2
+		 BODY2:
+		 ;body
+		 ;arr[j + 1] = arr[j];
+		 mov ebx,[eax+ edi * 4 ] ; ebx <- arr[j]
+		 mov [eax + edi * 4+4], ebx ; arr[j+1] = arr[j] ( ebx)
+		 ; step
+		 dec edi ; j--
+		 ; condition
+		 COND2:
+		 cmp edi, -1 ; j >= 0
+		 jl STEP2
+		 cmp [eax + edi * 4], edx ; arr[j] > key
+		 jg BODY2
+
+	  STEP2:
+	  ;arr[j + 1] = key;
+	  mov [eax + edi * 4 + 4], edx ; arr[j+1] = key
+		 ; restore ebx
+		 pop ebx
+
+;    step
+		inc ebx ; i++
+;    condition
+	 COND1:
+	    cmp ebx, [ebp + 12] ; i < n
+		jl BODY1
+
+	
+;
+;        
+;        arr[j + 1] = key;
+;    }
+
+
+popad
+mov esp, ebp
+pop ebp
+ret 8
+insertionSort ENDP
+
 main PROC
+
+;    printArray(arr, N);
+	 push LENGTHOF array
+	 push OFFSET array
+	 call printArray
+
+;	 insertionSort(arr, N);
+	 push LENGTHOF array
+	 push OFFSET array
+	 call insertionSort
+
+	 mov edx, OFFSET message1
+	 call WriteString
+
+;    printArray(arr, N);
+	 push LENGTHOF array
+	 push OFFSET array
+	 call printArray
 
 exit
 main ENDP
